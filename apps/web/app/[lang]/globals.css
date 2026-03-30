@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #f4f1ea;
+  --foreground: #101820;
+  --card: rgba(255, 255, 255, 0.78);
+  --card-foreground: #101820;
+  --popover: rgba(255, 255, 255, 0.92);
+  --popover-foreground: #101820;
+  --primary: #0d5bd7;
+  --primary-foreground: #f7fafc;
+  --secondary: #e2e8f0;
+  --secondary-foreground: #142235;
+  --muted: #ebe7de;
+  --muted-foreground: #5f6b7a;
+  --accent: #c8d8f8;
+  --accent-foreground: #123257;
+  --destructive: #c53a34;
+  --destructive-foreground: #fff1ef;
+  --border: rgba(16, 24, 32, 0.11);
+  --input: rgba(255, 255, 255, 0.9);
+  --ring: rgba(13, 91, 215, 0.35);
+  --chart-1: #0d5bd7;
+  --chart-2: #0f766e;
+  --chart-3: #7c3aed;
+  --chart-4: #c67b2c;
+  --chart-5: #475569;
+  --radius: 20px;
+  --sidebar: rgba(16, 24, 32, 0.94);
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #8eb5ff;
+  --sidebar-primary-foreground: #08111d;
+  --sidebar-accent: rgba(255, 255, 255, 0.06);
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: rgba(142, 181, 255, 0.35);
+  --success: #0f8f5f;
+  --success-foreground: #ecfdf5;
+  --warning: #b7791f;
+  --warning-foreground: #fffaf0;
+}
+
+.dark {
+  --background: #0b1118;
+  --foreground: #eef3f8;
+  --card: rgba(18, 24, 33, 0.94);
+  --card-foreground: #eef3f8;
+  --popover: rgba(18, 24, 33, 0.98);
+  --popover-foreground: #eef3f8;
+  --primary: #8aa8d8;
+  --primary-foreground: #09111a;
+  --secondary: #151c25;
+  --secondary-foreground: #d7e1ec;
+  --muted: #10161d;
+  --muted-foreground: #8d9aaa;
+  --accent: #1a2330;
+  --accent-foreground: #d9e5f2;
+  --destructive: #dc6c64;
+  --destructive-foreground: #fff5f5;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(16, 22, 30, 0.98);
+  --ring: rgba(138, 168, 216, 0.28);
+  --sidebar: rgba(12, 17, 24, 0.98);
+  --sidebar-foreground: #eef3f8;
+  --sidebar-primary: #8aa8d8;
+  --sidebar-primary-foreground: #09111a;
+  --sidebar-accent: rgba(255, 255, 255, 0.04);
+  --sidebar-accent-foreground: #eef3f8;
+  --sidebar-border: rgba(255, 255, 255, 0.06);
+  --sidebar-ring: rgba(138, 168, 216, 0.28);
+  --success: #37a36c;
+  --success-foreground: #ecfdf5;
+  --warning: #c7923d;
+  --warning-foreground: #161b22;
+}
+
+@theme inline {
+  --font-sans: 'Manrope', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+.font-sans {
+  font-family: 'Manrope', system-ui, sans-serif;
+}
+
+.font-mono {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(13, 91, 215, 0.12), transparent 30%),
+    radial-gradient(circle at top right, rgba(198, 123, 44, 0.12), transparent 26%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(244, 241, 234, 0.96));
+  min-height: 100vh;
+}
+
+.dark body {
+  background:
+    radial-gradient(circle at top left, rgba(53, 77, 108, 0.18), transparent 26%),
+    radial-gradient(circle at top right, rgba(24, 35, 48, 0.2), transparent 24%),
+    linear-gradient(180deg, #0b1118, #0a1016 42%, #0d131b 100%);
+}
+
+::selection {
+  background: rgba(13, 91, 215, 0.18);
+  color: inherit;
+}
+
+.finance-grid {
+  background-image:
+    linear-gradient(to right, rgba(16, 24, 32, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(16, 24, 32, 0.045) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.dark .finance-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+}
+
+.finance-shell {
+  position: relative;
+}
+
+.finance-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.24), transparent 28%),
+    linear-gradient(180deg, transparent, rgba(16, 24, 32, 0.03));
+}
+
+.dark .finance-shell::before {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.015), transparent 16%),
+    linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.18));
+}
+
+.section-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 700;
+}
+
+.metric-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.54);
+  backdrop-filter: blur(12px);
+  border-radius: 999px;
+  padding: 0.55rem 0.9rem;
+}
+
+.dark .metric-chip {
+  background: rgba(18, 24, 33, 0.92);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}

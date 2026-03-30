@@ -1,0 +1,54 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+.envrc
+
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+dist/
+out/
+coverage/
+coverage.json
+*.tsbuildinfo
+
+# Hardhat
+packages/contracts/artifacts/
+packages/contracts/cache/
+packages/contracts/typechain-types/
+packages/contracts/types/
+packages/contracts/deployments/
+
+# Hardhat vars (may contain API keys)
+.hardhat_vars.json
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+.vscode/tasks.json
+.idea/
+
+# Turbo
+.turbo/
+
+# Deployment / hosting
+.vercel/
+
+# Package manager noise
+package-lock.json
