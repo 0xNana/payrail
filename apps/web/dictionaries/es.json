@@ -1,6 +1,6 @@
 {
   "common": {
-    "platformAdmin": "Administrador de Plataforma",
+    "platformAdmin": "Resumen",
     "employer": "Empleador",
     "employee": "Empleado",
     "devnetActive": "Devnet Activa",
@@ -32,7 +32,7 @@
     "copyright": "© 2026 Payrail"
   },
   "nav": {
-    "platformAdmin": "Administrador de Plataforma",
+    "platformAdmin": "Resumen",
     "employer": "Empleador",
     "employee": "Empleado"
   },

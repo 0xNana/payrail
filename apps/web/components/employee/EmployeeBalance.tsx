@@ -75,12 +75,9 @@ export function EmployeeBalance({
       {bindings.length > 0 && (
         <Card className="border-white/40 bg-white/74 dark:border-white/10 dark:bg-[rgba(7,18,36,0.76)]">
           <CardHeader>
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <div className="section-label">{tCompany.title}</div>
-                <CardTitle className="mt-2 text-2xl font-semibold tracking-tight">{tCompany.selectCompany}</CardTitle>
-              </div>
-              <div className="metric-chip">{bindings.length} payroll link{bindings.length === 1 ? "" : "s"}</div>
+            <div>
+              <div className="section-label">{tCompany.title}</div>
+              <CardTitle className="mt-2 text-2xl font-semibold tracking-tight">{tCompany.selectCompany}</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">

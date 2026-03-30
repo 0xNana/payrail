@@ -9,7 +9,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/payroll-logo.jpg" sizes="any" />
+        <link rel="icon" href="/payrail-mark.svg" type="image/svg+xml" />
       </head>
       <body suppressHydrationWarning>{children}</body>
     </html>

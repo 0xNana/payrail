@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { PayrailLogo } from "@/components/PayrailLogo";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import type { Locale } from "@/i18n-config";
@@ -184,10 +185,13 @@ export function Sidebar({ locale, variant, isOpen, onClose, currentPath }: Sideb
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="border-b border-white/10 p-6">
+            <div className="mb-5">
+              <PayrailLogo variant="lockup" className="[&_img:last-child]:brightness-0 [&_img:last-child]:invert" />
+            </div>
             <div className="flex items-center justify-between">
               <div className="space-y-3">
                 <div className="section-label text-white/55">
-                  {variant === "employer" ? "Employer command center" : "Employee workspace"}
+                  {variant === "employer" ? "Employers" : "Employees"}
                 </div>
                 <div>
                   <h2 className="text-xl font-semibold tracking-tight text-white">{getLabel("navigation")}</h2>

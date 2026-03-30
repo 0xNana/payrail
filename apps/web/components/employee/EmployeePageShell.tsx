@@ -39,7 +39,6 @@ export function EmployeePageShell({ locale, currentPath, title, subtitle, status
   if (!dict) return null;
 
   const employeeSidebar = dict.employeeSidebar as any;
-  const employeePage = dict.employeePage as any;
 
   return (
     <div className="finance-shell min-h-screen text-foreground">
@@ -90,28 +89,6 @@ export function EmployeePageShell({ locale, currentPath, title, subtitle, status
                 <ThemeToggle />
                 <LanguageSwitcher />
               </div>
-            </div>
-          </div>
-
-          <div className="grid gap-3 border-t border-border/70 pt-4 md:grid-cols-3">
-            <div className="rounded-2xl border border-border/70 bg-card px-4 py-4 dark:bg-[rgba(16,22,30,0.9)]">
-              <div className="section-label">Workspace</div>
-              <div className="mt-2 text-xl font-semibold tracking-tight">Employee access</div>
-              <p className="mt-1 text-xs text-muted-foreground">Private salary and balance review</p>
-            </div>
-            <div className="rounded-2xl border border-border/70 bg-card px-4 py-4 dark:bg-[rgba(16,22,30,0.9)]">
-              <div className="section-label">Network</div>
-              <div className="mt-2 text-xl font-semibold tracking-tight">Arbitrum Sepolia</div>
-              <p className="mt-1 text-xs text-muted-foreground">Active CoFHE target environment</p>
-            </div>
-            <div className="rounded-2xl border border-border/70 bg-card px-4 py-4 dark:bg-[rgba(16,22,30,0.9)]">
-              <div className="section-label">Security</div>
-              <div className="mt-2 flex items-center gap-2">
-                <span className="inline-flex rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-700 dark:text-emerald-200">
-                  Protected
-                </span>
-              </div>
-              <p className="mt-1 text-xs text-muted-foreground">{employeePage.securedByFhe}</p>
             </div>
           </div>
         </div>

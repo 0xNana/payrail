@@ -1,26 +1,33 @@
 import type { Address, PublicClient, WalletClient } from "viem";
 import { TARGET_PAYROLL_CHAIN_ID, TARGET_PAYROLL_CHAIN_NAME } from "@/lib/targetChain";
 
-type EncryptedUint64Input = import("@cofhe/sdk").EncryptedUint64Input;
-type EncryptedUint128Input = import("@cofhe/sdk").EncryptedUint128Input;
-type CofheSdkModule = typeof import("@cofhe/sdk");
 type CofheChainsModule = typeof import("@cofhe/sdk/chains");
 type CofheWebModule = typeof import("@cofhe/sdk/web");
 type CofheClient = Awaited<ReturnType<CofheWebModule["createCofheClient"]>>;
 
 const SECURITY_ZONE = 0;
+const FHE_TYPE_UINT64 = 5;
+const FHE_TYPE_UINT128 = 6;
+
+type EncryptableNumberInput = {
+  data: bigint;
+  securityZone: number;
+  utype: number;
+};
+
+type CofheEncryptedInput = {
+  ctHash: bigint;
+  securityZone: number;
+  utype: number;
+  signature: string;
+};
+
+type EncryptedUint64Input = CofheEncryptedInput;
+type EncryptedUint128Input = CofheEncryptedInput;
 
 let cofheClientPromise: Promise<CofheClient> | null = null;
-let cofheSdkModulePromise: Promise<CofheSdkModule> | null = null;
 let cofheChainsModulePromise: Promise<CofheChainsModule> | null = null;
 let cofheWebModulePromise: Promise<CofheWebModule> | null = null;
-
-function getCofheSdkModule() {
-  if (!cofheSdkModulePromise) {
-    cofheSdkModulePromise = import("@cofhe/sdk");
-  }
-  return cofheSdkModulePromise;
-}
 
 function getCofheChainsModule() {
   if (!cofheChainsModulePromise) {
@@ -91,6 +98,22 @@ async function ensureSelfPermit(params: {
   return client;
 }
 
+function createEncryptableUint64(value: bigint): EncryptableNumberInput {
+  return {
+    data: value,
+    securityZone: SECURITY_ZONE,
+    utype: FHE_TYPE_UINT64,
+  };
+}
+
+function createEncryptableUint128(value: bigint): EncryptableNumberInput {
+  return {
+    data: value,
+    securityZone: SECURITY_ZONE,
+    utype: FHE_TYPE_UINT128,
+  };
+}
+
 export async function encryptUint64(params: {
   chainId: number;
   publicClient: PublicClient;
@@ -99,9 +122,8 @@ export async function encryptUint64(params: {
   value: bigint;
 }): Promise<EncryptedUint64Input> {
   const client = await connectClient(params);
-  const sdkModule = await getCofheSdkModule();
   const [encrypted] = await client
-    .encryptInputs([sdkModule.Encryptable.uint64(params.value, SECURITY_ZONE)])
+    .encryptInputs([createEncryptableUint64(params.value)])
     .setAccount(params.userAddress)
     .setChainId(params.chainId)
     .execute();
@@ -117,9 +139,8 @@ export async function encryptUint128(params: {
   value: bigint;
 }): Promise<EncryptedUint128Input> {
   const client = await connectClient(params);
-  const sdkModule = await getCofheSdkModule();
   const [encrypted] = await client
-    .encryptInputs([sdkModule.Encryptable.uint128(params.value, SECURITY_ZONE)])
+    .encryptInputs([createEncryptableUint128(params.value)])
     .setAccount(params.userAddress)
     .setChainId(params.chainId)
     .execute();
@@ -135,9 +156,8 @@ export async function decryptUint64(params: {
   handle: `0x${string}`;
 }) {
   const client = await ensureSelfPermit(params);
-  const sdkModule = await getCofheSdkModule();
   return client
-    .decryptForView(params.handle, sdkModule.FheTypes.Uint64)
+    .decryptForView(params.handle, FHE_TYPE_UINT64)
     .setChainId(params.chainId)
     .setAccount(params.account)
     .withPermit()
@@ -152,9 +172,8 @@ export async function decryptUint128(params: {
   handle: `0x${string}`;
 }) {
   const client = await ensureSelfPermit(params);
-  const sdkModule = await getCofheSdkModule();
   return client
-    .decryptForView(params.handle, sdkModule.FheTypes.Uint128)
+    .decryptForView(params.handle, FHE_TYPE_UINT128)
     .setChainId(params.chainId)
     .setAccount(params.account)
     .withPermit()

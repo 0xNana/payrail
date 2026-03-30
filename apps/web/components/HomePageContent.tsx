@@ -352,12 +352,6 @@ export function HomePageContent({ locale }: HomePageContentProps) {
           </div>
 
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="hidden rounded-full border-emerald-500/20 bg-emerald-500/10 px-3 text-emerald-700 dark:text-emerald-200 md:inline-flex">
-              <span className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                {dict.common.devnetActive}
-              </span>
-            </Badge>
             <ClientOnly>
               <ThemeToggle />
             </ClientOnly>

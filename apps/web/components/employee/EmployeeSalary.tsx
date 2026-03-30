@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { type Address } from "viem";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmployeePageShell } from "@/components/employee/EmployeePageShell";
 import type { Locale } from "@/i18n-config";
@@ -62,21 +61,15 @@ export function EmployeeSalary({
             <div className="section-label">{tCompany.title}</div>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight">{tCompany.selectCompany}</h2>
           </div>
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="bg-transparent">
-              {bindings.length} payroll link{bindings.length === 1 ? "" : "s"}
-            </Badge>
-            <Badge variant="outline" className="bg-transparent">
-              {tokenSymbol} · {tokenDecimals}
-            </Badge>
-          </div>
         </div>
 
         {bindings.length > 0 && (
           <div className="rounded-2xl border border-border/70 bg-card p-4 dark:bg-[rgba(16,22,30,0.9)]">
             {bindings.length === 1 ? (
               <div className="flex flex-wrap items-center gap-3">
-                <Badge variant="outline">{bindings[0].company_name}</Badge>
+                <span className="rounded-xl border border-border/60 bg-background/70 px-3 py-1 text-sm font-medium">
+                  {bindings[0].company_name}
+                </span>
                 <code className="rounded-xl border border-border/60 bg-background/70 px-3 py-1 font-mono text-xs">
                   {bindings[0].payroll_contract_address.slice(0, 10)}...
                 </code>
