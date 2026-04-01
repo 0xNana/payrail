@@ -1,5 +1,4 @@
 import type { Address, PublicClient, WalletClient } from "viem";
-import { constructClient } from "iframe-shared-storage";
 import { TARGET_PAYROLL_CHAIN_ID, TARGET_PAYROLL_CHAIN_NAME } from "@/lib/targetChain";
 
 type CofheChainsModule = typeof import("@cofhe/sdk/chains");
@@ -61,26 +60,44 @@ function assertSupportedChain(chainId: number) {
 }
 
 function createWebStorage() {
-  const client = constructClient({
-    iframe: {
-      src: "https://iframe-shared-storage.vercel.app/hub.html",
-      messagingOptions: {
-        enableLog: "both",
-      },
-      iframeReadyTimeoutMs: 30_000,
-      methodCallTimeoutMs: 10_000,
-      methodCallRetries: 3,
-    },
-  });
+  const memoryStorage = new Map<string, string>();
 
-  const indexedDBKeyval = client.indexedDBKeyval;
+  const getStorage = () => {
+    if (typeof window === "undefined") {
+      return null;
+    }
+
+    try {
+      return window.localStorage;
+    } catch {
+      return null;
+    }
+  };
+
   return {
-    getItem: async (name: string) => (await indexedDBKeyval.get(name)) ?? null,
+    getItem: async (name: string) => {
+      const storage = getStorage();
+      if (storage) {
+        return storage.getItem(name);
+      }
+      return memoryStorage.get(name) ?? null;
+    },
     setItem: async (name: string, value: unknown) => {
-      await indexedDBKeyval.set(name, value);
+      const serialized = typeof value === "string" ? value : JSON.stringify(value);
+      const storage = getStorage();
+      if (storage) {
+        storage.setItem(name, serialized);
+        return;
+      }
+      memoryStorage.set(name, serialized);
     },
     removeItem: async (name: string) => {
-      await indexedDBKeyval.del(name);
+      const storage = getStorage();
+      if (storage) {
+        storage.removeItem(name);
+        return;
+      }
+      memoryStorage.delete(name);
     },
   };
 }

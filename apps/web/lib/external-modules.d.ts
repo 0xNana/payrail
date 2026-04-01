@@ -1,7 +1,3 @@
-declare module "iframe-shared-storage" {
-  export function constructClient(config: unknown): any;
-}
-
 declare module "tfhe" {
   const init: () => Promise<void>;
   export default init;

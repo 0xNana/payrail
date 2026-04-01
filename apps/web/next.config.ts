@@ -3,7 +3,9 @@ import { createRequire } from "node:module";
 import type { NextConfig } from 'next'
 
 const require = createRequire(import.meta.url);
-const tfheEntry = require.resolve("tfhe");
+const cofheWebEntry = require.resolve("@cofhe/sdk/web");
+const cofheRequire = createRequire(cofheWebEntry);
+const tfheEntry = cofheRequire.resolve("tfhe");
 const tfheWorkerHelpersPath = path.join(
   path.dirname(tfheEntry),
   "snippets/wasm-bindgen-rayon-9d40dbf53d170728/src/workerHelpers.js"
@@ -52,6 +54,7 @@ const nextConfig: NextConfig = {
 
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
+      tfhe: tfheEntry,
       [tfheWorkerHelpersPath]: tfheWorkerHelpersStubPath,
       // MetaMask SDK 
       "@react-native-async-storage/async-storage": false,

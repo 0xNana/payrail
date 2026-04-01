@@ -195,11 +195,11 @@ export function Sidebar({ locale, variant, isOpen, onClose, currentPath }: Sideb
                 </div>
                 <div>
                   <h2 className="text-xl font-semibold tracking-tight text-white">{getLabel("navigation")}</h2>
-                  <p className="mt-1 text-sm text-slate-400">
-                    {variant === "employer"
-                      ? "Encrypted payroll operations, treasury control, and audit workflows."
-                      : "Private salary access, balance visibility, and secure account controls."}
-                  </p>
+                  {variant === "employer" ? (
+                    <p className="mt-1 text-sm text-slate-400">
+                      Encrypted payroll operations, treasury control, and audit workflows.
+                    </p>
+                  ) : null}
                 </div>
               </div>
               <Button
@@ -261,21 +261,23 @@ export function Sidebar({ locale, variant, isOpen, onClose, currentPath }: Sideb
             })}
           </nav>
 
-          <div className="border-t border-white/10 p-4">
-            <div className="rounded-[26px] border border-white/10 bg-white/5 p-4">
-              <div className="section-label text-white/55">Network posture</div>
-              <div className="mt-3 flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-sm font-medium text-white">Arbitrum Sepolia</p>
-                  <p className="mt-1 text-xs text-slate-400">{dict.common.poweredByPayrailFhe}</p>
-                </div>
-                <div className="metric-chip border-emerald-400/20 bg-emerald-400/10 text-emerald-200">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
-                  Live
+          {variant === "employer" ? (
+            <div className="border-t border-white/10 p-4">
+              <div className="rounded-[26px] border border-white/10 bg-white/5 p-4">
+                <div className="section-label text-white/55">Network posture</div>
+                <div className="mt-3 flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-medium text-white">Arbitrum Sepolia</p>
+                    <p className="mt-1 text-xs text-slate-400">{dict.common.poweredByPayrailFhe}</p>
+                  </div>
+                  <div className="metric-chip border-emerald-400/20 bg-emerald-400/10 text-emerald-200">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
+                    Live
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : null}
         </div>
       </div>
     </>
