@@ -32,7 +32,7 @@ export function HomePageContent({ locale, dict }: HomePageContentProps) {
             <Link href={`/${locale}`} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
               {dict.nav.platformAdmin}
             </Link>
-            <Link href={`/${locale}/employer/dashboard`} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+            <Link href={`/${locale}/employer`} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
               {dict.nav.employer}
             </Link>
             <Link href={`/${locale}/employee`} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
@@ -58,7 +58,7 @@ export function HomePageContent({ locale, dict }: HomePageContentProps) {
             </div>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link href={`/${locale}/employer/dashboard`}>
+              <Link href={`/${locale}/employer`}>
                 <Button size="lg">{dict.common.goToEmployerDashboard}</Button>
               </Link>
               <Link href={`/${locale}/employee`}>

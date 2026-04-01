@@ -393,7 +393,7 @@ export function HomePageOnboardingClient({ locale, dict }: Props) {
                   </div>
 
                   <div className="flex flex-wrap gap-3 border-t border-border/70 pt-5">
-                    <Link href={`/${locale}/employer/dashboard`}>
+                    <Link href={`/${locale}/employer`}>
                       <Button>{dict.common.goToEmployerDashboard}</Button>
                     </Link>
                     <Link href={`/${locale}/employee`}>
