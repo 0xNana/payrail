@@ -52,3 +52,6 @@ Thumbs.db
 
 # Package manager noise
 package-lock.json
+
+# db
+supabase/
