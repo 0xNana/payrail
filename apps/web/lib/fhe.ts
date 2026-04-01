@@ -1,9 +1,10 @@
 import type { Address, PublicClient, WalletClient } from "viem";
+import { constructClient } from "iframe-shared-storage";
 import { TARGET_PAYROLL_CHAIN_ID, TARGET_PAYROLL_CHAIN_NAME } from "@/lib/targetChain";
 
 type CofheChainsModule = typeof import("@cofhe/sdk/chains");
-type CofheWebModule = typeof import("@cofhe/sdk/web");
-type CofheClient = Awaited<ReturnType<CofheWebModule["createCofheClient"]>>;
+type CofheCoreModule = typeof import("@cofhe/sdk");
+type TfheModule = typeof import("tfhe");
 
 const SECURITY_ZONE = 0;
 const FHE_TYPE_UINT64 = 5;
@@ -25,9 +26,10 @@ type CofheEncryptedInput = {
 type EncryptedUint64Input = CofheEncryptedInput;
 type EncryptedUint128Input = CofheEncryptedInput;
 
-let cofheClientPromise: Promise<CofheClient> | null = null;
 let cofheChainsModulePromise: Promise<CofheChainsModule> | null = null;
-let cofheWebModulePromise: Promise<CofheWebModule> | null = null;
+let cofheCoreModulePromise: Promise<CofheCoreModule> | null = null;
+let tfheModulePromise: Promise<TfheModule> | null = null;
+let tfheInitPromise: Promise<void> | null = null;
 
 function getCofheChainsModule() {
   if (!cofheChainsModulePromise) {
@@ -36,11 +38,18 @@ function getCofheChainsModule() {
   return cofheChainsModulePromise;
 }
 
-function getCofheWebModule() {
-  if (!cofheWebModulePromise) {
-    cofheWebModulePromise = import("@cofhe/sdk/web");
+function getCofheCoreModule() {
+  if (!cofheCoreModulePromise) {
+    cofheCoreModulePromise = import("@cofhe/sdk");
   }
-  return cofheWebModulePromise;
+  return cofheCoreModulePromise;
+}
+
+function getTfheModule() {
+  if (!tfheModulePromise) {
+    tfheModulePromise = import("tfhe");
+  }
+  return tfheModulePromise;
 }
 
 function assertSupportedChain(chainId: number) {
@@ -51,18 +60,98 @@ function assertSupportedChain(chainId: number) {
   }
 }
 
+function createWebStorage() {
+  const client = constructClient({
+    iframe: {
+      src: "https://iframe-shared-storage.vercel.app/hub.html",
+      messagingOptions: {
+        enableLog: "both",
+      },
+      iframeReadyTimeoutMs: 30_000,
+      methodCallTimeoutMs: 10_000,
+      methodCallRetries: 3,
+    },
+  });
+
+  const indexedDBKeyval = client.indexedDBKeyval;
+  return {
+    getItem: async (name: string) => (await indexedDBKeyval.get(name)) ?? null,
+    setItem: async (name: string, value: unknown) => {
+      await indexedDBKeyval.set(name, value);
+    },
+    removeItem: async (name: string) => {
+      await indexedDBKeyval.del(name);
+    },
+  };
+}
+
+function fromHexString(hexString: string): Uint8Array {
+  const cleanString = hexString.length % 2 === 1 ? `0${hexString}` : hexString;
+  const arr = cleanString.replace(/^0x/, "").match(/.{1,2}/g);
+  if (!arr) return new Uint8Array();
+  return new Uint8Array(arr.map((byte) => Number.parseInt(byte, 16)));
+}
+
+async function initTfhe() {
+  if (!tfheInitPromise) {
+    tfheInitPromise = (async () => {
+      const tfheModule = await getTfheModule();
+      await tfheModule.default();
+      await tfheModule.init_panic_hook();
+    })();
+    await tfheInitPromise;
+    return true;
+  }
+
+  await tfheInitPromise;
+  return false;
+}
+
+async function createBrowserCofheClient() {
+  const [chainsModule, coreModule, tfheModule] = await Promise.all([
+    getCofheChainsModule(),
+    getCofheCoreModule(),
+    getTfheModule(),
+  ]);
+
+  const tfhePublicKeyDeserializer = (buff: string) => {
+    tfheModule.TfheCompactPublicKey.deserialize(fromHexString(buff));
+  };
+
+  const compactPkeCrsDeserializer = (buff: string) => {
+    tfheModule.CompactPkeCrs.deserialize(fromHexString(buff));
+  };
+
+  const zkBuilderAndCrsGenerator = (fhe: string, crs: string) => {
+    const fhePublicKey = tfheModule.TfheCompactPublicKey.deserialize(fromHexString(fhe));
+    const zkBuilder = tfheModule.ProvenCompactCiphertextList.builder(fhePublicKey);
+    const zkCrs = tfheModule.CompactPkeCrs.deserialize(fromHexString(crs));
+
+    return { zkBuilder, zkCrs };
+  };
+
+  const config = coreModule.createCofheConfigBase({
+    environment: "web",
+    supportedChains: [chainsModule.getChainById(TARGET_PAYROLL_CHAIN_ID)!],
+    fheKeyStorage: createWebStorage(),
+    useWorkers: false,
+  });
+
+  return coreModule.createCofheClientBase({
+    config,
+    zkBuilderAndCrsGenerator,
+    tfhePublicKeyDeserializer,
+    compactPkeCrsDeserializer,
+    initTfhe,
+  });
+}
+
+type CofheClient = Awaited<ReturnType<typeof createBrowserCofheClient>>;
+let cofheClientPromise: Promise<CofheClient> | null = null;
+
 async function getCofheClient() {
   if (!cofheClientPromise) {
-    cofheClientPromise = Promise.all([
-      getCofheChainsModule(),
-      getCofheWebModule(),
-    ]).then(([chainsModule, webModule]) =>
-      webModule.createCofheClient(
-        webModule.createCofheConfig({
-          supportedChains: [chainsModule.getChainById(TARGET_PAYROLL_CHAIN_ID)!],
-        })
-      )
-    );
+    cofheClientPromise = createBrowserCofheClient();
   }
 
   return cofheClientPromise;

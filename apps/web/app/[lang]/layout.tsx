@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { i18n } from "@/i18n-config";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "Payrail - Compliant, Auditable, Encrypted Payroll Rail for Institutions",
@@ -20,5 +21,9 @@ export default async function RootLayout({
 }) {
   await params;
 
-  return <div className="font-sans antialiased">{children}</div>;
+  return (
+    <Providers>
+      <div className="font-sans antialiased">{children}</div>
+    </Providers>
+  );
 }
