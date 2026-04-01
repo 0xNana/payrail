@@ -69,7 +69,7 @@ export function EmployerDashboard() {
         variant="employer"
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
-        currentPath={`/employer`}
+        currentPath={`/${ctx.locale}/employer/dashboard`}
       />
 
       <EmployerDashboardHeader

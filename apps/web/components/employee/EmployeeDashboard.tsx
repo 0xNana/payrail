@@ -114,7 +114,7 @@ export function EmployeeDashboard({
         variant="employee"
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
-        currentPath={`/employee`}
+        currentPath={`/${locale}/employee/salary`}
       />
 
       {/* Header */}
