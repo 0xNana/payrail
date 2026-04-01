@@ -1,5 +1,5 @@
-export default function EmployerRegisterPage() {
-  return <EmployerRegisterPageClient />;
-}
+import { LazyEmployerRegisterPageClient } from "./LazyEmployerRegisterPageClient";
 
-import { EmployerRegisterPageClient } from "./EmployerRegisterPageClient";
+export default function EmployerRegisterPage() {
+  return <LazyEmployerRegisterPageClient />;
+}

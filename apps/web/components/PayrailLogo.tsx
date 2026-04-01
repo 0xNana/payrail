@@ -1,5 +1,4 @@
-"use client";
-
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 type PayrailLogoProps = {
@@ -10,9 +9,11 @@ type PayrailLogoProps = {
 export function PayrailLogo({ variant = "lockup", className }: PayrailLogoProps) {
   if (variant === "mark") {
     return (
-      <img
+      <Image
         src="/payrail-mark.svg"
         alt="Payrail"
+        width={40}
+        height={40}
         className={cn("h-10 w-10", className)}
       />
     );
@@ -20,9 +21,11 @@ export function PayrailLogo({ variant = "lockup", className }: PayrailLogoProps)
 
   if (variant === "wordmark") {
     return (
-      <img
+      <Image
         src="/payrail-logo.svg"
         alt="Payrail"
+        width={164}
+        height={32}
         className={cn("h-8 w-auto", className)}
       />
     );
@@ -30,8 +33,8 @@ export function PayrailLogo({ variant = "lockup", className }: PayrailLogoProps)
 
   return (
     <div className={cn("flex items-center gap-3", className)}>
-      <img src="/payrail-mark.svg" alt="Payrail" className="h-10 w-10" />
-      <img src="/payrail-logo.svg" alt="Payrail wordmark" className="h-7 w-auto" />
+      <Image src="/payrail-mark.svg" alt="Payrail" width={40} height={40} className="h-10 w-10" />
+      <Image src="/payrail-logo.svg" alt="Payrail wordmark" width={144} height={28} className="h-7 w-auto" />
     </div>
   );
 }

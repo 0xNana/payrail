@@ -1,5 +1,5 @@
-export default function EmployerDashboardPage() {
-  return <EmployerDashboardPageClient />;
-}
+import { LazyEmployerDashboardPageClient } from "./LazyEmployerDashboardPageClient";
 
-import { EmployerDashboardPageClient } from "./EmployerDashboardPageClient";
+export default function EmployerDashboardPage() {
+  return <LazyEmployerDashboardPageClient />;
+}

@@ -1,5 +1,5 @@
-export default function EmployerSettingsPage() {
-  return <EmployerSettingsPageClient />;
-}
+import { LazyEmployerSettingsPageClient } from "./LazyEmployerSettingsPageClient";
 
-import { EmployerSettingsPageClient } from "./EmployerSettingsPageClient";
+export default function EmployerSettingsPage() {
+  return <LazyEmployerSettingsPageClient />;
+}

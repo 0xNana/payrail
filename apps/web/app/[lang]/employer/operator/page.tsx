@@ -1,5 +1,5 @@
-export default function EmployerOperatorPage() {
-  return <EmployerOperatorPageClient />;
-}
+import { LazyEmployerOperatorPageClient } from "./LazyEmployerOperatorPageClient";
 
-import { EmployerOperatorPageClient } from "./EmployerOperatorPageClient";
+export default function EmployerOperatorPage() {
+  return <LazyEmployerOperatorPageClient />;
+}

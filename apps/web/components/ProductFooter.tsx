@@ -5,7 +5,6 @@ import { Zap } from "lucide-react";
 
 import type { Locale } from "@/i18n-config";
 import { useDictionary } from "@/lib/useDictionary";
-import { PayrailLogo } from "@/components/PayrailLogo";
 
 type ProductFooterProps = {
   locale: Locale;
@@ -21,7 +20,7 @@ export function ProductFooter({ locale, className = "" }: ProductFooterProps) {
     <footer className={`border-t border-border/70 ${className}`.trim()}>
       <div className="mx-auto grid max-w-[1440px] gap-8 px-6 py-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
         <div className="space-y-4">
-          <PayrailLogo />
+          <div className="text-lg font-semibold tracking-tight text-foreground">Payrail</div>
           <p className="max-w-xl text-sm leading-6 text-muted-foreground">
             Compliant, auditable, encrypted payroll operations for institutions managing confidential compensation workflows on-chain.
           </p>

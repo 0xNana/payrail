@@ -15,7 +15,6 @@ import {
 } from "wagmi";
 
 import { getContracts } from "@/lib/contracts";
-import { decryptUint128, decryptUint64, encryptUint128, encryptUint64 } from "@/lib/fhe";
 import { buildPayrollPeriod } from "@/lib/payrollPeriod";
 import {
   deleteCompanyOffchain,
@@ -90,6 +89,7 @@ function fmtErr(e: unknown) {
 
 interface EmployerContextValue {
   locale: Locale;
+  rosterInsightsReady: boolean;
 
   // Platform + company
   registryAddress?: string;
@@ -176,7 +176,15 @@ interface EmployerContextValue {
 
 const EmployerContext = createContext<EmployerContextValue | undefined>(undefined);
 
-export function EmployerContextProvider({ locale, children }: { locale: Locale; children: React.ReactNode }) {
+export function EmployerContextProvider({
+  locale,
+  children,
+  scope = "full",
+}: {
+  locale: Locale;
+  children: React.ReactNode;
+  scope?: "core" | "full";
+}) {
   const router = useRouter();
   const { address } = useAccount();
   const chainId = useChainId();
@@ -185,15 +193,18 @@ export function EmployerContextProvider({ locale, children }: { locale: Locale; 
   const { writeContractAsync } = useWriteContract();
   const { switchChainAsync } = useSwitchChain();
 
+  const loadRosterData = scope === "full";
+
   const [status, setStatus] = useState("");
   const [txHash, setTxHash] = useState<`0x${string}` | null>(null);
   const waitTx = useWaitForTransactionReceipt({ hash: txHash ?? undefined });
 
   const [referenceUtcPreview, setReferenceUtcPreview] = useState(nowUtcDatetimeLocal());
   useEffect(() => {
+    if (!loadRosterData) return;
     const id = setInterval(() => setReferenceUtcPreview(nowUtcDatetimeLocal()), 60_000);
     return () => clearInterval(id);
-  }, []);
+  }, [loadRosterData]);
 
   const [updateSalaryInput, setUpdateSalaryInput] = useState("1000");
   const [operatorDays, setOperatorDays] = useState("10");
@@ -240,7 +251,9 @@ export function EmployerContextProvider({ locale, children }: { locale: Locale; 
   const companyName = companyBinding?.company?.legal_name ?? "(not synced in Supabase)";
 
   const payrollCompanyRef = useReadContract(
-    payrollAbi && hasCompany ? { address: payrollAddr, abi: payrollAbi, functionName: "companyRef" } : undefined
+    loadRosterData && payrollAbi && hasCompany
+      ? { address: payrollAddr, abi: payrollAbi, functionName: "companyRef" }
+      : undefined
   );
 
   const underlyingAddr = wrapper?.address as Address | undefined;
@@ -260,7 +273,7 @@ export function EmployerContextProvider({ locale, children }: { locale: Locale; 
   );
 
   const selectedLastPaidPeriod = useReadContract(
-    payrollAbi && hasCompany && me && selectedEmployee
+    loadRosterData && payrollAbi && hasCompany && me && selectedEmployee
       ? { address: payrollAddr, abi: payrollAbi, functionName: "lastRunIdOfEmployee", args: [selectedEmployee], account: me }
       : undefined
   );
@@ -279,7 +292,7 @@ export function EmployerContextProvider({ locale, children }: { locale: Locale; 
       }
 
       try {
-        setRosterLoading(true);
+        if (loadRosterData) setRosterLoading(true);
         setSupabaseError(null);
 
         const binding = await getEmployerCompanyBinding({ employerWalletAddress: me, chainId });
@@ -287,21 +300,32 @@ export function EmployerContextProvider({ locale, children }: { locale: Locale; 
           if (!cancelled) {
             setCompanyBinding(null);
             setRosterRows([]);
+            setCompanyBindingChainId(null);
+          }
+          return;
+        }
+
+        if (!cancelled) {
+          setCompanyBinding(binding);
+          setCompanyBindingChainId(binding.company_onchain_binding_id);
+        }
+
+        if (!loadRosterData) {
+          if (!cancelled) {
+            setRosterRows([]);
           }
           return;
         }
 
         const roster = await getEmployerRoster({ company_onchain_binding_id: binding.company_onchain_binding_id }, me);
-        setCompanyBindingChainId(binding.company_onchain_binding_id);
 
         if (!cancelled) {
-          setCompanyBinding(binding);
           setRosterRows(roster);
         }
       } catch (e) {
         if (!cancelled) setSupabaseError(fmtErr(e));
       } finally {
-        if (!cancelled) setRosterLoading(false);
+        if (!cancelled && loadRosterData) setRosterLoading(false);
       }
     }
 
@@ -309,7 +333,7 @@ export function EmployerContextProvider({ locale, children }: { locale: Locale; 
     return () => {
       cancelled = true;
     };
-  }, [me, chainId, rosterVersion]);
+  }, [me, chainId, rosterVersion, loadRosterData]);
 
   useEffect(() => {
     if (waitTx.isSuccess) {
@@ -397,6 +421,7 @@ export function EmployerContextProvider({ locale, children }: { locale: Locale; 
     if (amount <= 0n) throw new Error("Deposit amount must be > 0");
 
     setStatus("🔐 Encrypting treasury deposit...");
+    const { encryptUint128 } = await import("@/lib/fhe");
     const encryptedAmount = await encryptUint128({
       chainId,
       publicClient,
@@ -467,6 +492,7 @@ export function EmployerContextProvider({ locale, children }: { locale: Locale; 
     if (value > UINT64_MAX) throw new Error("Salary too large for uint64");
 
     setStatus("🔐 Encrypting salary...");
+    const { encryptUint64 } = await import("@/lib/fhe");
     const encryptedSalary = await encryptUint64({
       chainId,
       publicClient,
@@ -633,6 +659,7 @@ export function EmployerContextProvider({ locale, children }: { locale: Locale; 
     if (!walletClient || !wrapper || !me || !publicClient) throw new Error("Missing wallet or token contract");
     if (!canUseFhe) throw new Error(`Switch to ${TARGET_PAYROLL_CHAIN_NAME} to decrypt via CoFHE.`);
     setStatus("🔓 Decrypting employer treasury balance...");
+    const { decryptUint128 } = await import("@/lib/fhe");
     const handle = await publicClient.readContract({
       address: wrapper.address,
       abi: wrapper.abi,
@@ -656,6 +683,7 @@ export function EmployerContextProvider({ locale, children }: { locale: Locale; 
     if (!walletClient) throw new Error("Wallet client not ready");
     if (!canUseFhe) throw new Error(`Switch to ${TARGET_PAYROLL_CHAIN_NAME} to decrypt via CoFHE.`);
     setStatus("🔓 Decrypting selected employee salary...");
+    const { decryptUint64 } = await import("@/lib/fhe");
     const handle = await publicClient.readContract({
       address: payrollAddr,
       abi: payrollAbi,
@@ -679,6 +707,7 @@ export function EmployerContextProvider({ locale, children }: { locale: Locale; 
     if (!walletClient) throw new Error("Wallet client not ready");
     if (!canUseFhe) throw new Error(`Switch to ${TARGET_PAYROLL_CHAIN_NAME} to decrypt via CoFHE.`);
     setStatus("🔓 Decrypting selected employee last payment...");
+    const { decryptUint64 } = await import("@/lib/fhe");
     const handle = await publicClient.readContract({
       address: payrollAddr,
       abi: payrollAbi,
@@ -782,6 +811,7 @@ export function EmployerContextProvider({ locale, children }: { locale: Locale; 
 
   const value: EmployerContextValue = {
     locale,
+    rosterInsightsReady: loadRosterData,
     registryAddress: registry?.address,
     wrapperAddress: wrapper?.address,
     underlyingAddr,

@@ -1,5 +1,5 @@
-export default function EmployerEditPage() {
-  return <EmployerEditPageClient />;
-}
+import { LazyEmployerEditPageClient } from "./LazyEmployerEditPageClient";
 
-import { EmployerEditPageClient } from "./EmployerEditPageClient";
+export default function EmployerEditPage() {
+  return <LazyEmployerEditPageClient />;
+}

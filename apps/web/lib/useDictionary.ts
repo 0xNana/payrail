@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import type { Locale } from "@/i18n-config";
+import en from "@/dictionaries/en.json";
+import es from "@/dictionaries/es.json";
+import fr from "@/dictionaries/fr.json";
 
 export interface Dictionary {
   common: {
@@ -417,21 +419,16 @@ export interface Dictionary {
   };
 }
 
-async function loadDictionary(locale: Locale): Promise<Dictionary> {
-  const module = await import(`@/dictionaries/${locale}.json`);
-  return module.default;
-}
+const dictionaries: Record<Locale, Dictionary> = {
+  en: en as unknown as Dictionary,
+  es: es as unknown as Dictionary,
+  fr: fr as unknown as Dictionary,
+};
 
 export function getDictionary(locale: Locale): Promise<Dictionary> {
-  return loadDictionary(locale);
+  return Promise.resolve(dictionaries[locale] ?? dictionaries.en);
 }
 
 export function useDictionary(locale: Locale) {
-  const [dict, setDict] = useState<Dictionary | null>(null);
-
-  useEffect(() => {
-    loadDictionary(locale).then(setDict);
-  }, [locale]);
-
-  return dict;
+  return dictionaries[locale] ?? dictionaries.en;
 }

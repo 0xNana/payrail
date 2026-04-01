@@ -1,5 +1,5 @@
-export default function EmployerFundingPage() {
-  return <EmployerFundingPageClient />;
-}
+import { LazyEmployerFundingPageClient } from "./LazyEmployerFundingPageClient";
 
-import { EmployerFundingPageClient } from "./EmployerFundingPageClient";
+export default function EmployerFundingPage() {
+  return <LazyEmployerFundingPageClient />;
+}

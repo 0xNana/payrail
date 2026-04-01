@@ -1,5 +1,5 @@
-export default function EmployerRosterPage() {
-  return <EmployerRosterPageClient />;
-}
+import { LazyEmployerRosterPageClient } from "./LazyEmployerRosterPageClient";
 
-import { EmployerRosterPageClient } from "./EmployerRosterPageClient";
+export default function EmployerRosterPage() {
+  return <LazyEmployerRosterPageClient />;
+}

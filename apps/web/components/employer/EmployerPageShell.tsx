@@ -145,13 +145,17 @@ export function EmployerPageShell({ currentPath, children }: EmployerPageShellPr
             </div>
             <div className="rounded-2xl border border-border/70 bg-card px-4 py-4 dark:bg-[rgba(16,22,30,0.9)]">
               <div className="section-label">Active employees</div>
-              <div className="mt-2 text-xl font-semibold tracking-tight">{ctx.activeEmployeeCount}</div>
-              <p className="mt-1 text-xs text-muted-foreground">Eligible for the next payroll cycle</p>
+              <div className="mt-2 text-xl font-semibold tracking-tight">{ctx.rosterInsightsReady ? ctx.activeEmployeeCount : "—"}</div>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {ctx.rosterInsightsReady ? "Eligible for the next payroll cycle" : "Roster metrics load on payroll-heavy routes"}
+              </p>
             </div>
             <div className="rounded-2xl border border-border/70 bg-card px-4 py-4 dark:bg-[rgba(16,22,30,0.9)]">
               <div className="section-label">Cadences</div>
-              <div className="mt-2 text-xl font-semibold tracking-tight">{ctx.activeCadenceCount}</div>
-              <p className="mt-1 text-xs text-muted-foreground">Configured payment schedules</p>
+              <div className="mt-2 text-xl font-semibold tracking-tight">{ctx.rosterInsightsReady ? ctx.activeCadenceCount : "—"}</div>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {ctx.rosterInsightsReady ? "Configured payment schedules" : "Loaded on dashboard, roster, and edit flows"}
+              </p>
             </div>
             <div className="rounded-2xl border border-border/70 bg-card px-4 py-4 dark:bg-[rgba(16,22,30,0.9)]">
               <div className="section-label">Status</div>

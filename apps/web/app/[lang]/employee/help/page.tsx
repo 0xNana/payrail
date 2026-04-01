@@ -1,7 +1,7 @@
 import type { Locale } from "@/i18n-config";
-import { EmployeeHelpPageClient } from "./EmployeeHelpPageClient";
+import { LazyEmployeeHelpPageClient } from "./LazyEmployeeHelpPageClient";
 
 export default async function EmployeeHelpPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
-  return <EmployeeHelpPageClient lang={lang as Locale} />;
+  return <LazyEmployeeHelpPageClient lang={lang as Locale} />;
 }

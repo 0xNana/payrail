@@ -1,5 +1,5 @@
-export default function EmployerTreasuryPage() {
-  return <EmployerTreasuryPageClient />;
-}
+import { LazyEmployerTreasuryPageClient } from "./LazyEmployerTreasuryPageClient";
 
-import { EmployerTreasuryPageClient } from "./EmployerTreasuryPageClient";
+export default function EmployerTreasuryPage() {
+  return <LazyEmployerTreasuryPageClient />;
+}
