@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import { PayrailLogo } from "@/components/PayrailLogo";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -136,17 +138,6 @@ export function Sidebar({ locale, variant, isOpen, onClose, currentPath }: Sideb
           ),
         },
         {
-          label: "confidential",
-          href: `/${locale}/employer/confidential`,
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c-1.1 0-2 .9-2 2v4h4v-4c0-1.1-.9-2-2-2z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 8V7a6 6 0 1112 0v1" />
-              <rect x="4" y="10" width="16" height="10" rx="2" />
-            </svg>
-          ),
-        },
-        {
           label: "settings",
           href: `/${locale}/employer/settings`,
           icon: (
@@ -222,12 +213,10 @@ export function Sidebar({ locale, variant, isOpen, onClose, currentPath }: Sideb
               const itemIndex = navItems.indexOf(item) + 1;
               
               return (
-                <a
+                <Link
                   key={item.href}
                   href={item.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.location.href = item.href;
+                  onClick={() => {
                     onClose();
                   }}
                   className={cn(
@@ -256,7 +245,7 @@ export function Sidebar({ locale, variant, isOpen, onClose, currentPath }: Sideb
                   >
                     {itemIndex.toString().padStart(2, "0")}
                   </span>
-                </a>
+                </Link>
               );
             })}
           </nav>
